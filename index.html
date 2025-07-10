@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anúncio de Venda - Hyundai HB20X 2016/2017</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .main-image-container {
+            height: 250px;
+            background-color: #1f2937;
+        }
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .thumbnail {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .thumbnail:hover, .thumbnail.active {
+            border-color: #f59e0b;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #f59e0b;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-gray-800 shadow-2xl rounded-2xl overflow-hidden max-w-sm w-full mx-auto border-4 border-yellow-500">
+        
+        <!-- Galeria de Imagens -->
+        <div>
+            <div class="main-image-container">
+                <img id="main-image" src="https://i.postimg.cc/T35D9Vn8/frente.jpg" alt="Hyundai HB20X - Foto Principal" class="main-image">
+            </div>
+            <div class="grid grid-cols-4 gap-1 p-1 bg-gray-900">
+                <img src="https://i.postimg.cc/T35D9Vn8/frente.jpg" alt="Frente do carro" class="thumbnail active h-20 w-full object-cover">
+                <img src="https://i.postimg.cc/9rpPhTVt/lado-esquerdo.jpg" alt="Lateral esquerda do carro" class="thumbnail h-20 w-full object-cover">
+                <img src="https://i.postimg.cc/zV5w6pmG/lado-direito.jpg" alt="Lateral direita do carro" class="thumbnail h-20 w-full object-cover">
+                <img src="https://i.postimg.cc/k2gQX4gr/traseira.jpg" alt="Traseira do carro" class="thumbnail h-20 w-full object-cover">
+            </div>
+        </div>
+
+        <!-- Detalhes da Venda -->
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-white mb-2">HB20X Style 1.6 Flex Aut.</h1>
+            
+            <!-- Grid de Informações Principais -->
+            <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                <div class="bg-gray-700 p-2 rounded-lg">
+                    <span class="text-xs text-gray-400">Ano</span>
+                    <p class="text-white font-bold text-lg">2016/2017</p>
+                </div>
+                <div class="bg-gray-700 p-2 rounded-lg">
+                    <span class="text-xs text-gray-400">Quilometragem</span>
+                    <p class="text-white font-bold text-lg">133.102 KM</p>
+                </div>
+                <div class="bg-green-800 p-2 rounded-lg col-span-2">
+                    <span class="text-xs text-green-300">Documentação</span>
+                    <p class="text-white font-bold text-lg">✅ IPVA 2025 PAGO</p>
+                </div>
+            </div>
+
+            <!-- Preços -->
+            <div class="bg-gray-900 rounded-lg p-4 mb-4 border border-gray-700">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-400 text-sm">PREÇO FIPE</span>
+                    <span class="text-gray-400 text-sm font-semibold line-through">R$ 66.272,00</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-yellow-400 text-lg font-bold">VALOR PEDIDO</span>
+                    <span class="text-3xl text-white font-extrabold tracking-tight">R$ 59.999,00</span>
+                </div>
+            </div>
+            
+            <!-- Contato -->
+            <div class="bg-gray-900 border-2 border-dashed border-gray-600 rounded-lg p-4 text-center mb-6">
+                <p class="text-gray-300 text-sm mb-1">Falar com:</p>
+                <p class="text-white font-bold text-2xl tracking-wider">ISMARLEI</p>
+                <p class="text-xl text-green-400 font-bold mt-1">(63) 99981-0107</p>
+            </div>
+
+            <!-- Seção da API Gemini -->
+            <div class="border-t-2 border-gray-700 pt-4">
+                 <button id="generate-text-btn" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 flex items-center justify-center">
+                    <span class="mr-2">✨</span> Gerar Descrição de Venda
+                </button>
+                <div id="loading-indicator" class="hidden flex justify-center items-center mt-4">
+                    <div class="loader"></div>
+                </div>
+                <div id="description-output" class="mt-4 bg-gray-700 p-4 rounded-lg text-gray-300 text-sm whitespace-pre-wrap hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Lógica da Galeria ---
+        const mainImage = document.getElementById('main-image');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                mainImage.src = this.src;
+                mainImage.alt = this.alt;
+                thumbnails.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // --- Lógica para a API Gemini ---
+        const generateBtn = document.getElementById('generate-text-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const descriptionOutput = document.getElementById('description-output');
+
+        generateBtn.addEventListener('click', async () => {
+            loadingIndicator.classList.remove('hidden');
+            descriptionOutput.classList.add('hidden');
+            descriptionOutput.textContent = '';
+            generateBtn.disabled = true;
+
+            const carModel = "Hyundai HB20X Style 1.6 Flex";
+            const carYear = "2016/2017";
+            const carKm = "133.102 KM";
+            const carTax = "IPVA 2025 Pago";
+            const fipePrice = "R$ 66.272,00";
+            const salePrice = "R$ 59.999,00";
+            const contactName = "Ismarlei";
+            const contactPhone = "(63) 99981-0107";
+
+            const prompt = `Você é um vendedor de carros especialista. Crie um texto de anúncio curto, em português do Brasil, e persuasivo para o seguinte veículo:
+- Modelo: ${carModel}
+- Ano: ${carYear}
+- Quilometragem: ${carKm}
+- Câmbio: Automático
+- Documentação: ${carTax}
+- Preço Pedido: ${salePrice}
+- Preço Tabela FIPE: ${fipePrice}
+- Contato: ${contactName}, Telefone: ${contactPhone}
+
+Destaque os seguintes pontos:
+1.  O carro é uma oportunidade única, super conservado e com o IPVA de 2025 já pago (uma grande economia!).
+2.  Mencione que o preço pedido está excelente e abaixo da FIPE.
+3.  Use uma linguagem vendedora e amigável, com parágrafos curtos e emojis para chamar atenção.
+4.  Termine com uma chamada para ação clara, incentivando a pessoa a ligar ou mandar mensagem para não perder a chance.`;
+
+            try {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Injetado pelo ambiente
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Erro na API: ${response.statusText}`);
+                const result = await response.json();
+                const generatedText = result.candidates[0].content.parts[0].text;
+                
+                descriptionOutput.textContent = generatedText;
+                descriptionOutput.classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Erro ao gerar texto:", error);
+                descriptionOutput.textContent = "Ocorreu um erro ao gerar a descrição. Tente novamente.";
+                descriptionOutput.classList.add('hidden');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+                generateBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
